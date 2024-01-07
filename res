@@ -1,0 +1,15 @@
+selama 48488
+lama 19613
+Selama 250
+terlama 142
+ulama 127
+ma-lama 124
+jam 19184
+kejam 1715
+tajam 1542
+meminjam 556
+berjam-jam 548
+pinjam 406
+sejam 394
+peminjam 180
+jam-jam 82

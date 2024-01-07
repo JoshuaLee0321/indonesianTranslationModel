@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+
+<head>
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+   <script src="static/hello.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+
+<body>
+   <div class="d-flex p-2 bd-highlight  bg-dark" style="color: white; resize: none;">
+      我的論文測試空間
+   </div>
+   <div class="m-3">
+      <!-- 輸入句子並且翻譯 -->
+      <textarea class="form-control myborcolor input_text" placeholder="Leave a comment here" id="floatingTextarea"
+         name="chi_string" style="height: 100px"></textarea>
+      <label for="floatingTextarea2">請輸入句子</label>
+      <div class=" col-lg-3 p-2" style="text-align: left;">
+         <button type="button" id="sendbtn" class="col btn btn-primary">翻譯</button>
+         <select class="col" name="model" id="model">
+            <!-- <option value="zh2id_1002">翻譯中文至印尼文</option>
+            <option value="id2zh_1002">翻譯印尼文至中文</option> -->
+            <option value="zh2id_1013">翻譯中文至印尼文(NEW)</option>
+            <option value="id2zh_1013">翻譯印尼文至中文(NEW)</option>
+         </select>
+      </div>
+   </div>
+   <!-- translation result -->
+   <div class="d-flex m-3">
+      <p>翻譯紀錄</p>
+   </div>
+   <div>
+      <table class="d-flex m-3 bg-light bg-gradient">
+         <tbody class="m-3">
+            <thead>
+               <tr id="translate_result" >
+                  <th class="d-flex " id='translate_result' style="position: relative;"></th>
+               </tr>
+            </thead>
+            <tr>
+
+            </tr>
+         </tbody>
+      </table>
+   </div>
+</body>
+<footer>
+   <script>
+      $('#sendbtn').click(function () {
+         // add var for language and model for future update
+         var text = {
+            translation_text: $('textarea[name=chi_string]').val(),
+            model: $('[name=model]').val()
+         }
+         // console.log(text)
+         $.ajax({
+            url: '/translation',
+            method: 'POST',
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify(text)
+         }).done(function (result) {
+            console.log(result);
+            let history = $("<th />").attr({
+               "class" :"d-flex",
+               "role":"group"
+            });
+            var numberedAfterTranslation = result['after_translation'].map(function(element, index) {
+               return (index + 1) + ". " + element;
+           }).join('<br>');
+            $('#translate_result').prepend("<p>" + result['before_translation'] + " <br> " + numberedAfterTranslation + "</p>");
+
+         });
+      });
+      
+   </script>
+</footer>
+
+</html>
