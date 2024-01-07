@@ -1,14 +1,10 @@
 import hanlp
+import json
 from scripts.utils.postProcessStatic import *
 
-# HanLP = hanlp.pipeline() \
-#     .append(hanlp.utils.rules.split_sentence, output_key='sentences') \
-#     .append(hanlp.load('FINE_ELECTRA_SMALL_ZH'), output_key='tok') \
-#     .append(hanlp.load('CTB9_POS_ELECTRA_SMALL'), output_key='pos') \
-#     .append(hanlp.load('MSRA_NER_ELECTRA_SMALL_ZH'), output_key='ner', input_key='tok') \
-#     .append(hanlp.load('CTB9_DEP_ELECTRA_SMALL', conll=0), output_key='dep', input_key='tok')\
-#     .append(hanlp.load('CTB9_CON_ELECTRA_SMALL'), output_key='con', input_key='tok')
-    
+with open("scripts/utils/commonMistakes.json", 'r', encoding='utf-8') as f:
+    COMMONMISTAKES = dict(json.load(f))
+
 
 def zh_post_process(pipe, text: str, level: int = 1):
     hanlp_result = pipe(text)
@@ -94,13 +90,17 @@ def confusionSetMerge(textList: list):
     highestResult = result[0]
     
     # 檢查如果其他 set 都存在的話，那就要放進去
-    
-    
-    
-    
-    
+
     return result
     
+def postFleuCorrectionModel(sentence: str) -> str:
+    for ans, mistakes in COMMONMISTAKES.items():
+        for mistake in mistakes:
+            if mistake in sentence:
+                sentence = sentence.replace(mistake, ans)
+            
+    return sentence
+
     
 if __name__ == "__main__":
     zh_post_process()

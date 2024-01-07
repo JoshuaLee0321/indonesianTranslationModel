@@ -56,18 +56,18 @@ def translate_id2zh_1013(text: str, pipe) -> str:
     # BPE ----- 真奇怪，放入 bpe 之後效果變糟？
     # logging.info("applying bpe")
 
-    text = applybpe(text, "id")
-    # logging.info(f"result: {text}")
+    # text = applybpe(text, "id")
+    # logging.info(f"applied bpe: {text}")
     
     # simple preprocess
     logging.debug("indonesian_simple_preprocess")
     text = indonesian_simple_preprocess(text) # 此時為 list，方便接下來處理
-
+    logging.info(f"applied simple prepeocess: {text}")
     
     # replacement
     logging.debug("indonesian_replacement")
     text = indonesian_replacement(text)
-    
+    logging.info(f"applied replacement: {text}")
     
     # go into model plus unk repl
     logging.debug("--->unk_repl")
@@ -78,9 +78,10 @@ def translate_id2zh_1013(text: str, pipe) -> str:
     
     logging.debug("--->zh_post_process")
     for item in text:    
-        post = zh_post_process(pipe, item)
-        post =  removeBPEandNorm(post)
+        post =  removeBPEandNorm(item)
+        post = zh_post_process(pipe, post)
         post = ruleBasedConversion(srcLangText, post)
+        post = postFleuCorrectionModel(post)
         result.append(post)
         
     logging.debug(result)
