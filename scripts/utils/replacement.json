@@ -39,6 +39,7 @@
     "aku" : [
         "saya"
     ],
+    
     "tidak":[
         "enggak",
         "tak",
@@ -199,6 +200,14 @@
         "december",
         "December",
         "desember"
+    ],
+    "m@@ angga":[
+        "mangga"
+    ],
+    "celanaku":[
+        "celana"
+    ],
+    "memperbaiki":[
+        "menambal"
     ]
-
 }

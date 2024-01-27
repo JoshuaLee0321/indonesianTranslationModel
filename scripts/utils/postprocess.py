@@ -2,9 +2,21 @@ import hanlp
 import json
 from scripts.utils.postProcessStatic import *
 
-with open("scripts/utils/commonMistakes.json", 'r', encoding='utf-8') as f:
-    COMMONMISTAKES = dict(json.load(f))
-
+with open("scripts/utils/commonMistakes_indo.json", 'r', encoding='utf-8') as f:
+    targDict = dict(json.load(f))
+    ZHZHCOMMONMISTAKES = targDict["zhMistakes"]
+    IDZHCOMMONMISTAKES = targDict["idzhMistakes"]
+FRUITLIST = ['mangga', 'apel', 'pisang', 'jeruk', 'anggur', 'nanas', 'kelapa', 'stroberi', 'kiwi', 'semangka',
+             'pepaya', 'alpukat', 'manggis', 'markisa', 'nangka', 'salak', 'durian', 'rambutan', 'sirsak', 'ceri',
+             'peach', 'plum', 'kiwi', 'blueberry', 'blackberry', 'raspberry', 'orange', 'lemon', 'lime', 'pomegranate',
+             'coconut', 'pineapple', 'guava', 'papaya', 'avocado', 'dragon fruit', 'persimmon', 'passion fruit', 'apricot',
+             'watermelon', 'cantaloupe', 'honeydew', 'grapefruit', 'mulberry', 'cucumber', 'tomato', 'bell pepper',
+             'pumpkin', 'squash', 'zucchini', 'eggplant', 'carrot', 'broccoli', 'cauliflower', 'cabbage', 'lettuce',
+             'spinach', 'kale', 'asparagus', 'brussels sprouts', 'green bean', 'celery', 'cucumber', 'radish', 'turnip',
+             'sweet potato', 'potato', 'onion', 'garlic', 'ginger', 'leek', 'shallot', 'cabbage', 'corn', 'pea', 'bean',
+             'chickpea', 'lentil', 'soybean', 'edamame', 'peanut', 'cashew', 'almond', 'walnut', 'hazelnut', 'pistachio',
+             'macadamia', 'pecan', 'chestnut', 'coconut', 'olive', 'grape', 'fig', 'date', 'raisin', 'prune', 'currant',
+             'apricot', 'pomegranate', 'kiwi', 'cranberry', 'blueberry', 'blackberry', 'raspberry']
 
 def zh_post_process(pipe, text: str, level: int = 1):
     hanlp_result = pipe(text)
@@ -68,19 +80,23 @@ def removeBPEandNorm(text: str) -> str:
     return text
 def ruleBasedConversion(srcLangText: str, targetLangText: str) -> str:
     # for indonesian
+    for key, value in IDZHCOMMONMISTAKES.items():
+        if key in srcLangText:
+            for k,  v in value.items():
+                for errors in v:
+                    targetLangText = targetLangText.replace(errors, k)
+
+    # 水果 跟 壞掉了 的關係       
+    for item in srcLangText.split():
+        if item in FRUITLIST and "ini sudah basi" in srcLangText:
+            targetLangText = targetLangText.replace("陳 - 舊", '壞掉')
+            targetLangText = targetLangText.replace("陳- 舊", '壞掉')
+            targetLangText = targetLangText.replace("過時", '壞掉')
+            targetLangText = targetLangText.replace("很 舊", '壞掉了')
+            targetLangText = targetLangText.replace("很 舊", '壞掉了')
+            targetLangText = targetLangText.replace("壞 的", '壞掉了')
+            targetLangText = targetLangText.replace("舊 的", '壞掉了')
     
-    if "Saya kira" in srcLangText or "Aku kira" in srcLangText or "Dia kira" in srcLangText:
-        # print("##########################", srcLangText)
-        # print(targetLangText)
-        targetLangText = targetLangText.replace("我 想", "我以為")
-        targetLangText = targetLangText.replace("他 想", "他以為")
-        
-    if "SD" in srcLangText or "sekolah dasar" in srcLangText:
-        targetLangText = targetLangText.replace("高中", "小學")
-    
-    if "magang" in srcLangText:
-        targetLangText = targetLangText.replace("实习 医生", "實習生")
-        
     return targetLangText
 def confusionSetMerge(textList: list):
     
@@ -94,7 +110,7 @@ def confusionSetMerge(textList: list):
     return result
     
 def postFleuCorrectionModel(sentence: str) -> str:
-    for ans, mistakes in COMMONMISTAKES.items():
+    for ans, mistakes in ZHZHCOMMONMISTAKES.items():
         for mistake in mistakes:
             if mistake in sentence:
                 sentence = sentence.replace(mistake, ans)

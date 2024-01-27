@@ -11,7 +11,10 @@ ADJDICT:list = ["sampit", "kecil", "malam",
            "baru",
         ]
 CAPRULE:list = [
-    "SD", "China", "Taiwan", "Slim", "WC"
+    "SD", "China", "Taiwan", "Slim", "WC", "Tainan",
+    "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu",
+    "Minggu","Mahjong"
+    
 ]
 class ReplDictionary:
     def __init__(self) -> None:

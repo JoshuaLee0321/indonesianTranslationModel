@@ -40,6 +40,7 @@ def translate_zh2id_1013(text: str, pipe) -> str:
         此翻譯包括 unknown replacement 技術， 基本上就是換掉模組裡面沒有的詞彙
     '''
     # text = dosth(text)
+    text = text.replace("甚", "什")
     text = unk_repl(pipe, True, "zh", "idn", model_zh2id_1013, text)    
     return text
 

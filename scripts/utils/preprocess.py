@@ -222,6 +222,9 @@ def indonesian_simple_preprocess(text: str) -> List[str]:
                 if text[i - 1] == "caranya":
                     continue
                 text[i] = "caranya " + text[i]
+            if text[i] == "supaya":
+                if text[i - 1] != ",":
+                    text[i] = ", supaya"
         except:
             continue
             
@@ -291,6 +294,10 @@ def indonesian_replacement(input_sent: List[str]):
                     ) or (sent[i] + " " + sent[i + 1] == "Relaksasikan diri"):
                 sent[i] = "tolong dir"
                 sent[i + 1] = "kau santai"
+            if (sent[i] + " " + sent[i + 1] == "cukup makan"
+                    ) or (sent[i] + " " + sent[i + 1] == "Cukup makan"):
+                sent[i] = "kenyang "
+                sent[i + 1] = ""
         except:
             continue
         
